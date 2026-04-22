@@ -3,6 +3,7 @@
 ## 0.2.0
 
 - Renamed the extension, command namespace, settings, icon asset, package output, and remote data directory to SSH Server Workspace.
+- Added a PNG Marketplace icon and Marketplace publishing script.
 - Added `sshServerWorkspace.language` setting for German/English tree view labels, prompts, and notifications.
 - Added Marketplace/GitHub-ready package metadata.
 - Added MIT license.

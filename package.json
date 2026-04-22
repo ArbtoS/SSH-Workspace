@@ -5,6 +5,7 @@
   "version": "0.2.0",
   "publisher": "ArbtoS",
   "license": "MIT",
+  "icon": "resources/ssh-server-workspace.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/ArbtoS/SSH-Server-Workspace.git"
@@ -239,6 +240,7 @@
   "scripts": {
     "compile": "tsc -p ./",
     "package": "vsce package --out ssh-server-workspace-0.2.0.vsix",
+    "publish:marketplace": "vsce publish",
     "watch": "tsc -watch -p ./",
     "vscode:prepublish": "npm run compile"
   },
