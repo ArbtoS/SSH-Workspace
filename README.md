@@ -162,41 +162,6 @@ Die Extension ist als Workspace-Extension konfiguriert:
 
 Damit ist sie fuer den Einsatz im Remote-SSH-Workspace gedacht.
 
-### Veroeffentlichung
-
-Das Projekt ist als normale VS-Code-Extension paketierbar:
-
-```powershell
-npm run package
-```
-
-Die erzeugte Datei `ssh-server-workspace-*.vsix` kann lokal oder in einem Remote-SSH-Fenster installiert werden.
-
-Damit die Extension in VS Code unter `Extensions` suchbar ist, muss sie im Visual Studio Marketplace veroeffentlicht werden:
-
-1. Einen Publisher im Visual Studio Marketplace / Azure DevOps anlegen.
-2. Der Publisher-ID muss zum Feld `publisher` in `package.json` passen, aktuell `ArbtoS`.
-3. Einen Personal Access Token mit Marketplace-Rechten erstellen.
-4. Lokal einmal anmelden:
-
-```powershell
-npx vsce login ArbtoS
-```
-
-5. Veroeffentlichen:
-
-```powershell
-npm run publish:marketplace
-```
-
-Alternativ kann direkt mit Token veroeffentlicht werden:
-
-```powershell
-npx vsce publish -p <TOKEN>
-```
-
-Den Token nicht committen und nicht in `package.json` speichern.
-
 ### KI-Unterstuetzung
 
 ChatGPT war an Planung, Code-Erstellung und Iteration dieser Extension beteiligt. Der Einsatz von ChatGPT ist hier transparent dokumentiert; die Extension bleibt ein normales, pruefbares Open-Source-Projekt.
@@ -356,41 +321,6 @@ The extension is configured as a workspace extension:
 ```
 
 It is intended to run inside the Remote-SSH workspace.
-
-### Publishing
-
-The project can be packaged as a regular VS Code extension:
-
-```powershell
-npm run package
-```
-
-The generated `ssh-server-workspace-*.vsix` file can be installed locally or inside a Remote-SSH window.
-
-To make the extension searchable in VS Code under `Extensions`, publish it to the Visual Studio Marketplace:
-
-1. Create a publisher in Visual Studio Marketplace / Azure DevOps.
-2. The publisher ID must match the `publisher` field in `package.json`, currently `ArbtoS`.
-3. Create a Personal Access Token with Marketplace permissions.
-4. Log in locally once:
-
-```powershell
-npx vsce login ArbtoS
-```
-
-5. Publish:
-
-```powershell
-npm run publish:marketplace
-```
-
-Alternatively, publish directly with a token:
-
-```powershell
-npx vsce publish -p <TOKEN>
-```
-
-Do not commit the token and do not store it in `package.json`.
 
 ### AI Assistance
 
