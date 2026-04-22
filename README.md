@@ -10,7 +10,7 @@ This project was developed with support from ChatGPT. The extension scope, behav
 
 ## Deutsch
 
-### Ueberblick
+### Überblick
 
 SSH Server Workspace ist eine kleine VS-Code-Extension fuer Remote-SSH-Workspaces. Sie hilft dabei, wichtige Serverdateien bewusst zu tracken, einfache Systeminfos zu sehen und Notizen direkt auf dem verbundenen Server abzulegen.
 
@@ -59,8 +59,6 @@ workspace-data.json
 ```
 
 Vor dem Command `SSH Server Workspace: Initialisieren` wird nichts auf dem Server angelegt.
-
-### Views
 
 #### Aktionen
 
@@ -219,8 +217,6 @@ workspace-data.json
 ```
 
 No server-side files are created before running `SSH Server Workspace: Initialisieren`.
-
-### Views
 
 #### Aktionen
 
