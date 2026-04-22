@@ -14,6 +14,13 @@ export function activate(context: vscode.ExtensionContext): void {
   const systemProvider = new SystemProvider(store);
   const notesProvider = new NotesProvider(store);
 
+  const refreshAll = (): void => {
+    actionsProvider.refresh();
+    workProvider.refresh();
+    systemProvider.refresh();
+    notesProvider.refresh();
+  };
+
   context.subscriptions.push(
     vscode.window.createTreeView("serverWorkspace.actions", {
       treeDataProvider: actionsProvider
@@ -28,6 +35,11 @@ export function activate(context: vscode.ExtensionContext): void {
     }),
     vscode.window.createTreeView("serverWorkspace.notes", {
       treeDataProvider: notesProvider
+    }),
+    vscode.workspace.onDidChangeConfiguration((event) => {
+      if (event.affectsConfiguration("serverWorkspace.language")) {
+        refreshAll();
+      }
     })
   );
 

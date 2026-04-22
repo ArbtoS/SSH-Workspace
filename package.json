@@ -1,16 +1,35 @@
 {
   "name": "server-workspace",
   "displayName": "Server Workspace",
-  "description": "Kleine Remote-SSH Workspace-Hilfe fuer Systemstatus, Notizen und Datei-Tracking.",
-  "version": "0.1.2",
-  "publisher": "local",
-  "private": true,
+  "description": "A small Remote-SSH workspace helper for system notes, server file tracking, and basic system information.",
+  "version": "0.2.0",
+  "publisher": "ArbtoS",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArbtoS/SSH-Server-Workspace.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ArbtoS/SSH-Server-Workspace/issues"
+  },
+  "homepage": "https://github.com/ArbtoS/SSH-Server-Workspace#readme",
+  "keywords": [
+    "remote-ssh",
+    "server",
+    "workspace",
+    "notes",
+    "linux"
+  ],
   "engines": {
     "vscode": "^1.92.0"
   },
   "categories": [
     "Other"
   ],
+  "galleryBanner": {
+    "color": "#101820",
+    "theme": "dark"
+  },
   "main": "./out/extension.js",
   "extensionKind": [
     "workspace"
@@ -197,11 +216,29 @@
           "group": "inline@1"
         }
       ]
+    },
+    "configuration": {
+      "title": "Server Workspace",
+      "properties": {
+        "serverWorkspace.language": {
+          "type": "string",
+          "default": "de",
+          "enum": [
+            "de",
+            "en"
+          ],
+          "enumDescriptions": [
+            "Deutsch",
+            "English"
+          ],
+          "description": "Language for Server Workspace tree view labels, prompts, and notifications. Manifest-provided view names and command titles require a window reload and may still follow VS Code's static extension manifest handling."
+        }
+      }
     }
   },
   "scripts": {
     "compile": "tsc -p ./",
-    "package": "vsce package --allow-missing-repository --out server-workspace-0.1.2.vsix",
+    "package": "vsce package --out server-workspace-0.2.0.vsix",
     "watch": "tsc -watch -p ./",
     "vscode:prepublish": "npm run compile"
   },

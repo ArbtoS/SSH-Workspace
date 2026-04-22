@@ -6,6 +6,7 @@ import {
   setTrackedFileComment,
   setTrackedFileDisplayName
 } from "../core/fileMetadata";
+import { t } from "../core/localization";
 import { readSystemInfo } from "../core/systemInfo";
 import { createDefaultWorkspaceData } from "../core/types";
 import { WorkspaceStore } from "../core/workspaceStore";
@@ -18,7 +19,7 @@ export interface RefreshableViews {
 async function loadRequiredData(store: WorkspaceStore) {
   const data = await store.load();
   if (!data) {
-    vscode.window.showWarningMessage("Server Workspace ist noch nicht initialisiert.");
+    vscode.window.showWarningMessage(t("warningNotInitialized"));
     return undefined;
   }
 
@@ -28,7 +29,7 @@ async function loadRequiredData(store: WorkspaceStore) {
 export async function initializeWorkspace(store: WorkspaceStore, views: RefreshableViews): Promise<void> {
   await store.initialize();
   views.refreshAll();
-  vscode.window.showInformationMessage(`Server Workspace wurde initialisiert: ${store.paths.directory}`);
+  vscode.window.showInformationMessage(t("initialized", { path: store.paths.directory }));
 }
 
 export async function refreshWorkspace(store: WorkspaceStore, views: RefreshableViews): Promise<void> {
@@ -41,22 +42,22 @@ export async function refreshWorkspace(store: WorkspaceStore, views: Refreshable
   await refreshTrackedFiles(data);
   await store.save(data);
   views.refreshAll();
-  vscode.window.showInformationMessage("Server Workspace wurde aktualisiert.");
+  vscode.window.showInformationMessage(t("refreshed"));
 }
 
 export async function recreateWorkspaceData(store: WorkspaceStore, views: RefreshableViews): Promise<void> {
   if (!(await store.isInitialized())) {
-    vscode.window.showWarningMessage("Bitte zuerst Server Workspace initialisieren.");
+    vscode.window.showWarningMessage(t("warningInitializeFirst"));
     return;
   }
 
   const confirmation = await vscode.window.showWarningMessage(
-    "workspace-data.json neu erstellen? Arbeitsliste und Rohlog werden geloescht. SYSTEMSTATUS.md und NOTIZEN.md bleiben erhalten.",
+    t("recreateQuestion"),
     { modal: true },
-    "Neu erstellen"
+    t("recreateConfirm")
   );
 
-  if (confirmation !== "Neu erstellen") {
+  if (confirmation !== t("recreateConfirm")) {
     return;
   }
 
@@ -64,12 +65,12 @@ export async function recreateWorkspaceData(store: WorkspaceStore, views: Refres
   data.server = await readSystemInfo();
   await store.recreateData(data);
   views.refreshAll();
-  vscode.window.showInformationMessage("workspace-data.json wurde neu erstellt.");
+  vscode.window.showInformationMessage(t("recreated"));
 }
 
 export async function openNotes(store: WorkspaceStore): Promise<void> {
   if (!(await store.isInitialized())) {
-    vscode.window.showWarningMessage("Bitte zuerst Server Workspace initialisieren.");
+    vscode.window.showWarningMessage(t("warningInitializeFirst"));
     return;
   }
 
@@ -78,15 +79,15 @@ export async function openNotes(store: WorkspaceStore): Promise<void> {
 
 export async function addNote(store: WorkspaceStore, views: RefreshableViews): Promise<void> {
   if (!(await store.isInitialized())) {
-    vscode.window.showWarningMessage("Bitte zuerst Server Workspace initialisieren.");
+    vscode.window.showWarningMessage(t("warningInitializeFirst"));
     return;
   }
 
   const note = await vscode.window.showInputBox({
-    title: "Notiz hinzufuegen",
-    prompt: "Wird direkt an NOTIZEN.md angehaengt",
+    title: t("actionAddNote"),
+    prompt: t("addNotePrompt"),
     ignoreFocusOut: true,
-    validateInput: (value) => (value.trim() ? undefined : "Notiz ist leer.")
+    validateInput: (value) => (value.trim() ? undefined : t("emptyNote"))
   });
 
   if (note === undefined) {
@@ -95,12 +96,12 @@ export async function addNote(store: WorkspaceStore, views: RefreshableViews): P
 
   await store.addNote(note.trim());
   views.refreshAll();
-  vscode.window.showInformationMessage("Notiz hinzugefuegt.");
+  vscode.window.showInformationMessage(t("noteAdded"));
 }
 
 export async function openSystemStatus(store: WorkspaceStore): Promise<void> {
   if (!(await store.isInitialized())) {
-    vscode.window.showWarningMessage("Bitte zuerst Server Workspace initialisieren.");
+    vscode.window.showWarningMessage(t("warningInitializeFirst"));
     return;
   }
 
@@ -110,7 +111,7 @@ export async function openSystemStatus(store: WorkspaceStore): Promise<void> {
 export async function openTrackedFile(store: WorkspaceStore, views: RefreshableViews, input?: unknown): Promise<void> {
   const filePath = extractFilePath(input);
   if (!filePath) {
-    vscode.window.showWarningMessage("Keine Datei ausgewaehlt.");
+    vscode.window.showWarningMessage(t("noFileSelected"));
     return;
   }
 
@@ -129,7 +130,7 @@ export async function openTrackedFile(store: WorkspaceStore, views: RefreshableV
   views.refreshAll();
 
   if (!trackedFile.exists) {
-    vscode.window.showWarningMessage(`Datei existiert nicht mehr: ${trackedFile.path}`);
+    vscode.window.showWarningMessage(t("fileNoLongerExists", { path: trackedFile.path }));
     return;
   }
 
@@ -139,7 +140,7 @@ export async function openTrackedFile(store: WorkspaceStore, views: RefreshableV
 export async function trackCurrentFile(store: WorkspaceStore, views: RefreshableViews): Promise<void> {
   const editor = vscode.window.activeTextEditor;
   if (!editor || editor.document.uri.scheme !== "file") {
-    vscode.window.showWarningMessage("Keine lokale Remote-Datei im aktiven Editor.");
+    vscode.window.showWarningMessage(t("noEditorFile"));
     return;
   }
 
@@ -149,29 +150,29 @@ export async function trackCurrentFile(store: WorkspaceStore, views: Refreshable
   }
 
   if (store.isInternalPath(editor.document.uri.fsPath)) {
-    vscode.window.showWarningMessage("Interne Server-Workspace-Dateien werden nicht in der Arbeitsliste getrackt.");
+    vscode.window.showWarningMessage(t("internalFileNotTracked"));
     return;
   }
 
   const trackedFile = await updateTrackedFileMetadata(data, editor.document.uri.fsPath);
   await store.save(data);
   views.refreshAll();
-  vscode.window.showInformationMessage(`Datei wird getrackt: ${trackedFile.path}`);
+  vscode.window.showInformationMessage(t("fileTracked", { path: trackedFile.path }));
 }
 
 export async function trackPath(store: WorkspaceStore, views: RefreshableViews): Promise<void> {
   const filePath = await vscode.window.showInputBox({
-    title: "Pfad tracken",
-    prompt: "Absoluter Pfad auf dem verbundenen Remote-Host",
+    title: t("actionTrackPath"),
+    prompt: t("trackPathPrompt"),
     placeHolder: "/etc/systemd/system/hostapd-healthcheck.timer",
     ignoreFocusOut: true,
     validateInput: (value) => {
       const trimmed = value.trim();
       if (!trimmed) {
-        return "Pfad ist erforderlich.";
+        return t("pathRequired");
       }
 
-      return path.isAbsolute(trimmed) ? undefined : "Bitte einen absoluten Pfad angeben.";
+      return path.isAbsolute(trimmed) ? undefined : t("absolutePathRequired");
     }
   });
 
@@ -185,7 +186,7 @@ export async function trackPath(store: WorkspaceStore, views: RefreshableViews):
   }
 
   if (store.isInternalPath(filePath.trim())) {
-    vscode.window.showWarningMessage("Interne Server-Workspace-Dateien werden nicht in der Arbeitsliste getrackt.");
+    vscode.window.showWarningMessage(t("internalFileNotTracked"));
     return;
   }
 
@@ -194,17 +195,17 @@ export async function trackPath(store: WorkspaceStore, views: RefreshableViews):
   views.refreshAll();
 
   if (!trackedFile.exists) {
-    vscode.window.showWarningMessage(`Pfad wurde aufgenommen, Datei existiert aber nicht: ${trackedFile.path}`);
+    vscode.window.showWarningMessage(t("pathRecordedMissing", { path: trackedFile.path }));
     return;
   }
 
-  vscode.window.showInformationMessage(`Pfad wird getrackt: ${trackedFile.path}`);
+  vscode.window.showInformationMessage(t("pathTracked", { path: trackedFile.path }));
 }
 
 export async function editComment(store: WorkspaceStore, views: RefreshableViews, input?: unknown): Promise<void> {
   const filePath = extractFilePath(input);
   if (!filePath) {
-    vscode.window.showWarningMessage("Keine Datei ausgewaehlt.");
+    vscode.window.showWarningMessage(t("noFileSelected"));
     return;
   }
 
@@ -215,12 +216,12 @@ export async function editComment(store: WorkspaceStore, views: RefreshableViews
 
   const trackedFile = data.trackedFiles.find((file) => path.resolve(file.path) === path.resolve(filePath));
   if (!trackedFile) {
-    vscode.window.showWarningMessage("Datei ist noch nicht getrackt.");
+    vscode.window.showWarningMessage(t("fileNotTracked"));
     return;
   }
 
   const comment = await vscode.window.showInputBox({
-    title: "Kommentar bearbeiten",
+    title: t("editComment"),
     prompt: trackedFile.path,
     value: trackedFile.comment
   });
@@ -237,7 +238,7 @@ export async function editComment(store: WorkspaceStore, views: RefreshableViews
 export async function editDisplayName(store: WorkspaceStore, views: RefreshableViews, input?: unknown): Promise<void> {
   const filePath = extractFilePath(input);
   if (!filePath) {
-    vscode.window.showWarningMessage("Keine Datei ausgewaehlt.");
+    vscode.window.showWarningMessage(t("noFileSelected"));
     return;
   }
 
@@ -248,12 +249,12 @@ export async function editDisplayName(store: WorkspaceStore, views: RefreshableV
 
   const trackedFile = data.trackedFiles.find((file) => path.resolve(file.path) === path.resolve(filePath));
   if (!trackedFile) {
-    vscode.window.showWarningMessage("Datei ist noch nicht getrackt.");
+    vscode.window.showWarningMessage(t("fileNotTracked"));
     return;
   }
 
   const displayName = await vscode.window.showInputBox({
-    title: "Klarname bearbeiten",
+    title: t("editDisplayName"),
     prompt: trackedFile.path,
     value: trackedFile.displayName || trackedFile.name,
     ignoreFocusOut: true
@@ -271,7 +272,7 @@ export async function editDisplayName(store: WorkspaceStore, views: RefreshableV
 export async function clearDisplayName(store: WorkspaceStore, views: RefreshableViews, input?: unknown): Promise<void> {
   const filePath = extractFilePath(input);
   if (!filePath) {
-    vscode.window.showWarningMessage("Keine Datei ausgewaehlt.");
+    vscode.window.showWarningMessage(t("noFileSelected"));
     return;
   }
 
@@ -281,7 +282,7 @@ export async function clearDisplayName(store: WorkspaceStore, views: Refreshable
   }
 
   if (!setTrackedFileDisplayName(data, filePath, "")) {
-    vscode.window.showWarningMessage("Datei ist noch nicht getrackt.");
+    vscode.window.showWarningMessage(t("fileNotTracked"));
     return;
   }
 
@@ -292,7 +293,7 @@ export async function clearDisplayName(store: WorkspaceStore, views: Refreshable
 export async function deleteComment(store: WorkspaceStore, views: RefreshableViews, input?: unknown): Promise<void> {
   const filePath = extractFilePath(input);
   if (!filePath) {
-    vscode.window.showWarningMessage("Keine Datei ausgewaehlt.");
+    vscode.window.showWarningMessage(t("noFileSelected"));
     return;
   }
 
@@ -302,7 +303,7 @@ export async function deleteComment(store: WorkspaceStore, views: RefreshableVie
   }
 
   if (!setTrackedFileComment(data, filePath, "")) {
-    vscode.window.showWarningMessage("Datei ist noch nicht getrackt.");
+    vscode.window.showWarningMessage(t("fileNotTracked"));
     return;
   }
 
@@ -313,18 +314,18 @@ export async function deleteComment(store: WorkspaceStore, views: RefreshableVie
 export async function copyPath(input?: unknown): Promise<void> {
   const filePath = extractFilePath(input);
   if (!filePath) {
-    vscode.window.showWarningMessage("Kein Pfad ausgewaehlt.");
+    vscode.window.showWarningMessage(t("noPathSelected"));
     return;
   }
 
   await vscode.env.clipboard.writeText(filePath);
-  vscode.window.showInformationMessage("Pfad kopiert.");
+  vscode.window.showInformationMessage(t("pathCopied"));
 }
 
 export async function updateMetadata(store: WorkspaceStore, views: RefreshableViews, input?: unknown): Promise<void> {
   const filePath = extractFilePath(input);
   if (!filePath) {
-    vscode.window.showWarningMessage("Keine Datei ausgewaehlt.");
+    vscode.window.showWarningMessage(t("noFileSelected"));
     return;
   }
 
@@ -336,5 +337,5 @@ export async function updateMetadata(store: WorkspaceStore, views: RefreshableVi
   await updateTrackedFileMetadata(data, filePath);
   await store.save(data);
   views.refreshAll();
-  vscode.window.showInformationMessage("Metadaten aktualisiert.");
+  vscode.window.showInformationMessage(t("metadataUpdated"));
 }

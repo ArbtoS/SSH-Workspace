@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { formatDisplayDate } from "../core/dateUtils";
+import { t } from "../core/localization";
 import { ServerSystemInfo } from "../core/types";
 import { WorkspaceStore } from "../core/workspaceStore";
 import { MessageItem } from "./commonItems";
@@ -17,13 +18,13 @@ class InfoItem extends vscode.TreeItem {
 
 function infoItems(server: ServerSystemInfo): InfoItem[] {
   return [
-    new InfoItem("Hostname", server.hostname),
-    new InfoItem("OS-Name", server.osName),
-    new InfoItem("OS-Version", server.osVersion),
-    new InfoItem("Kernel", server.kernel),
-    new InfoItem("Architektur", server.architecture),
-    new InfoItem("Haupt-IP", server.mainIp),
-    new InfoItem("Letzter Refresh", formatDisplayDate(server.lastRefreshAt, true))
+    new InfoItem(t("hostname"), server.hostname),
+    new InfoItem(t("osName"), server.osName),
+    new InfoItem(t("osVersion"), server.osVersion),
+    new InfoItem(t("kernel"), server.kernel),
+    new InfoItem(t("architecture"), server.architecture),
+    new InfoItem(t("mainIp"), server.mainIp),
+    new InfoItem(t("lastRefresh"), formatDisplayDate(server.lastRefreshAt, true))
   ];
 }
 
@@ -46,14 +47,14 @@ export class SystemProvider implements vscode.TreeDataProvider<SystemNode> {
       const data = await this.store.load();
       if (!data) {
         return [
-          new MessageItem("Noch nicht initialisiert", "Aktionen > Initialisieren")
+          new MessageItem(t("notInitialized"), t("initializeHint"))
         ];
       }
 
       return infoItems(data.server);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      return [new MessageItem("Fehler beim Laden", message)];
+      return [new MessageItem(t("errorLoading"), message)];
     }
   }
 }

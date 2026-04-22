@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { t } from "../core/localization";
 import { WorkspaceStore } from "../core/workspaceStore";
 import { CommandItem, MessageItem } from "./commonItems";
 
@@ -30,7 +31,7 @@ export class NotesProvider implements vscode.TreeDataProvider<NotesNode> {
     try {
       if (!(await this.store.isInitialized())) {
         return [
-          new MessageItem("Noch nicht initialisiert", "Aktionen > Initialisieren")
+          new MessageItem(t("notInitialized"), t("initializeHint"))
         ];
       }
 
@@ -38,34 +39,34 @@ export class NotesProvider implements vscode.TreeDataProvider<NotesNode> {
 
       return [
         new CommandItem(
-          "Notiz hinzufuegen",
+          t("actionAddNote"),
           {
             command: "serverWorkspace.addNote",
-            title: "Notiz hinzufuegen"
+            title: t("actionAddNote")
           },
           "add"
         ),
         new CommandItem(
-          "NOTIZEN.md",
+          t("notesFile"),
           {
             command: "serverWorkspace.openNotes",
-            title: "NOTIZEN.md"
+            title: t("notesFile")
           },
           "notebook"
         ),
         ...notes.map((line) => new NoteLineItem(line)),
         new CommandItem(
-          "SYSTEMSTATUS.md",
+          t("systemStatusFile"),
           {
             command: "serverWorkspace.openSystemStatus",
-            title: "SYSTEMSTATUS.md"
+            title: t("systemStatusFile")
           },
           "markdown"
         )
       ];
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      return [new MessageItem("Fehler beim Laden", message)];
+      return [new MessageItem(t("errorLoading"), message)];
     }
   }
 }

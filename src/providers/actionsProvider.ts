@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { t } from "../core/localization";
 import { CommandItem } from "./commonItems";
 
 type ActionNode = CommandItem;
@@ -18,50 +19,50 @@ export class ActionsProvider implements vscode.TreeDataProvider<ActionNode> {
   public getChildren(): ActionNode[] {
     return [
       new CommandItem(
-        "Initialisieren",
+        t("actionInitialize"),
         {
           command: "serverWorkspace.initialize",
-          title: "Initialisieren"
+          title: t("actionInitialize")
         },
         "add"
       ),
       new CommandItem(
-        "Aktualisieren",
+        t("actionRefresh"),
         {
           command: "serverWorkspace.refresh",
-          title: "Aktualisieren"
+          title: t("actionRefresh")
         },
         "refresh"
       ),
       new CommandItem(
-        "Pfad tracken",
+        t("actionTrackPath"),
         {
           command: "serverWorkspace.trackPath",
-          title: "Pfad tracken"
+          title: t("actionTrackPath")
         },
         "file-add"
       ),
       new CommandItem(
-        "Aktuelle Datei tracken",
+        t("actionTrackCurrentFile"),
         {
           command: "serverWorkspace.trackCurrentFile",
-          title: "Aktuelle Datei tracken"
+          title: t("actionTrackCurrentFile")
         },
         "eye"
       ),
       new CommandItem(
-        "Notiz hinzufuegen",
+        t("actionAddNote"),
         {
           command: "serverWorkspace.addNote",
-          title: "Notiz hinzufuegen"
+          title: t("actionAddNote")
         },
         "note"
       ),
       new CommandItem(
-        "Daten neu erstellen",
+        t("actionRecreateData"),
         {
           command: "serverWorkspace.recreateData",
-          title: "Daten neu erstellen"
+          title: t("actionRecreateData")
         },
         "trash"
       )

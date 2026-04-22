@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { compareIsoDesc, formatDisplayDate } from "../core/dateUtils";
+import { t } from "../core/localization";
 import { ChangeLogEntry, TrackedFile } from "../core/types";
 import { WorkspaceStore } from "../core/workspaceStore";
 import { CommandItem, MessageItem } from "./commonItems";
@@ -41,18 +42,18 @@ export class TrackedFileItem extends vscode.TreeItem {
     this.iconPath = new vscode.ThemeIcon(file.exists ? "file" : "warning");
     this.command = {
       command: "serverWorkspace.openFile",
-      title: "Oeffnen",
+      title: t("open"),
       arguments: [file.path]
     };
     this.tooltip = new vscode.MarkdownString(
       [
         `**${file.name}**`,
         "",
-        `Klarname: ${file.displayName || "-"}`,
-        `Pfad: \`${file.path}\``,
-        `Letzte Aenderung: ${formatDisplayDate(file.lastModifiedAt)}`,
-        `${file.owner || "-"}:${file.group || "-"} | ${file.mode || "-"} | ${file.changeCount} Aenderungen`,
-        `Kommentar: ${file.comment || "-"}`
+        `${t("displayName")}: ${file.displayName || "-"}`,
+        `${t("path")}: \`${file.path}\``,
+        `${t("lastChanged")}: ${formatDisplayDate(file.lastModifiedAt)}`,
+        `${file.owner || "-"}:${file.group || "-"} | ${file.mode || "-"} | ${file.changeCount} ${t("changes")}`,
+        `${t("comment")}: ${file.comment || "-"}`
       ].join("\n")
     );
   }
@@ -73,7 +74,7 @@ export class LogEntryItem extends vscode.TreeItem {
     this.iconPath = new vscode.ThemeIcon("history");
     this.command = {
       command: "serverWorkspace.openFile",
-      title: "Oeffnen",
+      title: t("open"),
       arguments: [entry.path]
     };
     this.tooltip = entry.path;
@@ -101,37 +102,37 @@ export class WorkPageProvider implements vscode.TreeDataProvider<WorkNode>, vsco
       const data = await this.store.load();
       if (!data) {
         return [
-          new MessageItem("Noch nicht initialisiert", "Aktionen > Initialisieren")
+          new MessageItem(t("notInitialized"), t("initializeHint"))
         ];
       }
 
       if (!element) {
-        return [new WorkSectionItem("files", "Arbeitsliste"), new WorkSectionItem("log", "Rohlog")];
+        return [new WorkSectionItem("files", t("workList")), new WorkSectionItem("log", t("rawLog"))];
       }
 
       if (element instanceof WorkSectionItem && element.section === "files") {
         const files = sortTrackedFiles(data.trackedFiles);
 
-        return files.length > 0 ? files.map((file) => new TrackedFileItem(file)) : [new MessageItem("Keine Dateien getrackt")];
+        return files.length > 0 ? files.map((file) => new TrackedFileItem(file)) : [new MessageItem(t("noTrackedFiles"))];
       }
 
       if (element instanceof WorkSectionItem && element.section === "log") {
         const entries = [...data.changeLog].sort((left, right) => compareIsoDesc(left.timestamp, right.timestamp));
-        return entries.length > 0 ? entries.map((entry) => new LogEntryItem(entry)) : [new MessageItem("Kein Rohlog")];
+        return entries.length > 0 ? entries.map((entry) => new LogEntryItem(entry)) : [new MessageItem(t("noRawLog"))];
       }
 
       if (element instanceof TrackedFileItem) {
         const file = element.file;
         const details = [
-          new DetailItem(`Klarname: ${file.displayName || "-"}`),
+          new DetailItem(`${t("displayName")}: ${file.displayName || "-"}`),
           new DetailItem(file.path),
-          new DetailItem(`Letzte Aenderung: ${formatDisplayDate(file.lastModifiedAt)}`),
-          new DetailItem(`${file.owner || "-"}:${file.group || "-"} | ${file.mode || "-"} | ${file.changeCount} Aenderungen`),
-          new DetailItem(`Kommentar: ${file.comment || "-"}`)
+          new DetailItem(`${t("lastChanged")}: ${formatDisplayDate(file.lastModifiedAt)}`),
+          new DetailItem(`${file.owner || "-"}:${file.group || "-"} | ${file.mode || "-"} | ${file.changeCount} ${t("changes")}`),
+          new DetailItem(`${t("comment")}: ${file.comment || "-"}`)
         ];
 
         if (!file.exists) {
-          details.unshift(new DetailItem("Status: Datei nicht gefunden"));
+          details.unshift(new DetailItem(t("fileMissing")));
         }
 
         return details;
@@ -140,7 +141,7 @@ export class WorkPageProvider implements vscode.TreeDataProvider<WorkNode>, vsco
       return [];
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      return [new MessageItem("Fehler beim Laden", message)];
+      return [new MessageItem(t("errorLoading"), message)];
     }
   }
 
