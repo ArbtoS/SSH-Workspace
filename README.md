@@ -1,14 +1,10 @@
 # SSH Server Workspace
 
-[Deutsch](#deutsch) | [English](#english)
-
 SSH Server Workspace is a small Visual Studio Code extension for users who are already connected to a Linux server through VS Code Remote-SSH. It does not create SSH connections, manage SSH hosts, or edit SSH configuration files.
 
 This project was developed with support from ChatGPT. The extension scope, behavior, and final code decisions remain project-owned and reviewable in this repository.
 
 ---
-
-## Deutsch
 
 ### Überblick
 
@@ -165,8 +161,6 @@ Damit ist sie fuer den Einsatz im Remote-SSH-Workspace gedacht.
 ChatGPT war an Planung, Code-Erstellung und Iteration dieser Extension beteiligt. Der Einsatz von ChatGPT ist hier transparent dokumentiert; die Extension bleibt ein normales, pruefbares Open-Source-Projekt.
 
 ---
-
-## English
 
 ### Overview
 
