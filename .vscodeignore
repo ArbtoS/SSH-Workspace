@@ -4,6 +4,7 @@ out/**/*.map
 tsconfig.json
 .vscode-test/
 .vscode/
+.github/
 .gitignore
 package-lock.json
 ssh-server-workspace-*.vsix
