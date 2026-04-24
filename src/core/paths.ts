@@ -1,15 +1,15 @@
 import * as os from "os";
 import * as path from "path";
 
-export interface SshServerWorkspacePaths {
+export interface SshWorkspacePaths {
   directory: string;
   systemStatus: string;
   notes: string;
   data: string;
 }
 
-export function getSshServerWorkspacePaths(): SshServerWorkspacePaths {
-  const directory = path.join(os.homedir(), ".ssh-server-workspace");
+export function getSshWorkspacePaths(): SshWorkspacePaths {
+  const directory = path.join(os.homedir(), ".ssh-workspace");
 
   return {
     directory,

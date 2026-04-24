@@ -15,7 +15,7 @@ type WorkNode =
   | LogEntryItem
   | MessageItem
   | CommandItem;
-const trackedFileMime = "application/vnd.ssh-server-workspace.tracked-file";
+const trackedFileMime = "application/vnd.ssh-workspace.tracked-file";
 
 function sortTrackedFiles(files: TrackedFile[]): TrackedFile[] {
   return [...files].sort((left, right) => {
@@ -50,7 +50,7 @@ export class TrackedFileItem extends vscode.TreeItem {
     this.contextValue = "trackedFile";
     this.iconPath = new vscode.ThemeIcon(file.exists ? "file" : "warning");
     this.command = {
-      command: "sshServerWorkspace.openFile",
+      command: "sshWorkspace.openFile",
       title: t("open"),
       arguments: [file.path]
     };
@@ -109,7 +109,7 @@ class ExtraCommandItem extends vscode.TreeItem {
     this.description = extraCommand.command;
     this.iconPath = new vscode.ThemeIcon("terminal");
     this.command = {
-      command: "sshServerWorkspace.runExtraCommand",
+      command: "sshWorkspace.runExtraCommand",
       title: extraCommand.label,
       arguments: [{ path: file.path, extraCommandId: extraCommand.id }]
     };
@@ -123,7 +123,7 @@ export class LogEntryItem extends vscode.TreeItem {
     this.contextValue = "logEntry";
     this.iconPath = new vscode.ThemeIcon("history");
     this.command = {
-      command: "sshServerWorkspace.openFile",
+      command: "sshWorkspace.openFile",
       title: t("open"),
       arguments: [entry.path]
     };
@@ -182,28 +182,28 @@ export class WorkPageProvider implements vscode.TreeDataProvider<WorkNode>, vsco
           new DetailItem(`${t("service")}: ${file.controlCommands?.serviceName || "-"}`),
           new FileActionItem(
             t("actionStart"),
-            "sshServerWorkspace.startFileAction",
+            "sshWorkspace.startFileAction",
             file,
             resolveControlCommand(file.controlCommands, "start"),
             "play"
           ),
           new FileActionItem(
             t("actionStop"),
-            "sshServerWorkspace.stopFileAction",
+            "sshWorkspace.stopFileAction",
             file,
             resolveControlCommand(file.controlCommands, "stop"),
             "primitive-square"
           ),
           new FileActionItem(
             t("actionRestart"),
-            "sshServerWorkspace.restartFileAction",
+            "sshWorkspace.restartFileAction",
             file,
             resolveControlCommand(file.controlCommands, "restart"),
             "refresh"
           ),
           new FileActionItem(
             t("actionStatus"),
-            "sshServerWorkspace.statusFileAction",
+            "sshWorkspace.statusFileAction",
             file,
             resolveControlCommand(file.controlCommands, "status"),
             "pulse"
@@ -211,7 +211,7 @@ export class WorkPageProvider implements vscode.TreeDataProvider<WorkNode>, vsco
           new CommandItem(
             t("actionAddExtraCommand"),
             {
-              command: "sshServerWorkspace.addExtraCommand",
+              command: "sshWorkspace.addExtraCommand",
               title: t("actionAddExtraCommand"),
               arguments: [{ path: file.path }]
             },

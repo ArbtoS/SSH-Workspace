@@ -41,7 +41,7 @@ export class NotesProvider implements vscode.TreeDataProvider<NotesNode> {
         new CommandItem(
           t("actionAddNote"),
           {
-            command: "sshServerWorkspace.addNote",
+            command: "sshWorkspace.addNote",
             title: t("actionAddNote")
           },
           "add"
@@ -49,7 +49,7 @@ export class NotesProvider implements vscode.TreeDataProvider<NotesNode> {
         new CommandItem(
           t("notesFile"),
           {
-            command: "sshServerWorkspace.openNotes",
+            command: "sshWorkspace.openNotes",
             title: t("notesFile")
           },
           "notebook"
@@ -58,7 +58,7 @@ export class NotesProvider implements vscode.TreeDataProvider<NotesNode> {
         new CommandItem(
           t("systemStatusFile"),
           {
-            command: "sshServerWorkspace.openSystemStatus",
+            command: "sshWorkspace.openSystemStatus",
             title: t("systemStatusFile")
           },
           "markdown"

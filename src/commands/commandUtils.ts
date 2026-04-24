@@ -15,7 +15,7 @@ export function registerSafeCommand(
       try {
         await callback(...args);
       } catch (error) {
-        vscode.window.showErrorMessage(`SSH Server Workspace: ${messageFromError(error)}`);
+        vscode.window.showErrorMessage(`SSH Workspace: ${messageFromError(error)}`);
       }
     })
   );

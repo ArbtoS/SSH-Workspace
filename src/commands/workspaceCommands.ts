@@ -462,7 +462,7 @@ async function runControlCommand(
     return;
   }
 
-  const terminalName = "SSH Server Workspace";
+  const terminalName = "SSH Workspace";
   const terminal = vscode.window.terminals.find((item) => item.name === terminalName) || vscode.window.createTerminal(terminalName);
   terminal.show();
   terminal.sendText(command, true);
@@ -565,7 +565,7 @@ export async function runExtraCommand(store: WorkspaceStore, input?: unknown): P
     return;
   }
 
-  const terminalName = "SSH Server Workspace";
+  const terminalName = "SSH Workspace";
   const terminal = vscode.window.terminals.find((item) => item.name === terminalName) || vscode.window.createTerminal(terminalName);
   terminal.show();
   terminal.sendText(extraCommand.command, true);

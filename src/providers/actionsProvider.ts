@@ -21,7 +21,7 @@ export class ActionsProvider implements vscode.TreeDataProvider<ActionNode> {
       new CommandItem(
         t("actionInitialize"),
         {
-          command: "sshServerWorkspace.initialize",
+          command: "sshWorkspace.initialize",
           title: t("actionInitialize")
         },
         "add"
@@ -29,7 +29,7 @@ export class ActionsProvider implements vscode.TreeDataProvider<ActionNode> {
       new CommandItem(
         t("actionRefresh"),
         {
-          command: "sshServerWorkspace.refresh",
+          command: "sshWorkspace.refresh",
           title: t("actionRefresh")
         },
         "refresh"
@@ -37,7 +37,7 @@ export class ActionsProvider implements vscode.TreeDataProvider<ActionNode> {
       new CommandItem(
         t("actionTrackPath"),
         {
-          command: "sshServerWorkspace.trackPath",
+          command: "sshWorkspace.trackPath",
           title: t("actionTrackPath")
         },
         "file-add"
@@ -45,7 +45,7 @@ export class ActionsProvider implements vscode.TreeDataProvider<ActionNode> {
       new CommandItem(
         t("actionTrackCurrentFile"),
         {
-          command: "sshServerWorkspace.trackCurrentFile",
+          command: "sshWorkspace.trackCurrentFile",
           title: t("actionTrackCurrentFile")
         },
         "eye"
@@ -53,7 +53,7 @@ export class ActionsProvider implements vscode.TreeDataProvider<ActionNode> {
       new CommandItem(
         t("actionAddNote"),
         {
-          command: "sshServerWorkspace.addNote",
+          command: "sshWorkspace.addNote",
           title: t("actionAddNote")
         },
         "note"
@@ -61,7 +61,7 @@ export class ActionsProvider implements vscode.TreeDataProvider<ActionNode> {
       new CommandItem(
         t("actionRecreateData"),
         {
-          command: "sshServerWorkspace.recreateData",
+          command: "sshWorkspace.recreateData",
           title: t("actionRecreateData")
         },
         "trash"

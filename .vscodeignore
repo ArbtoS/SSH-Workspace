@@ -7,4 +7,7 @@ tsconfig.json
 .github/
 .gitignore
 package-lock.json
+ssh-workspace-*.vsix
 ssh-server-workspace-*.vsix
+resources/ssh-server-workspace.png
+resources/ssh-server-workspace.svg

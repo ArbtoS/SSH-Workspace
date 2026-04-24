@@ -1,19 +1,19 @@
 {
-  "name": "ssh-server-workspace",
-  "displayName": "SSH Server Workspace",
+  "name": "ssh-workspace",
+  "displayName": "SSH Workspace",
   "description": "A small Remote-SSH workspace helper for system notes, server file tracking, and basic system information.",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "publisher": "ArbtoS",
   "license": "MIT",
-  "icon": "resources/ssh-server-workspace.png",
+  "icon": "resources/ssh-workspace.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ArbtoS/SSH-Server-Workspace.git"
+    "url": "https://github.com/ArbtoS/SSH-Workspace.git"
   },
   "bugs": {
-    "url": "https://github.com/ArbtoS/SSH-Server-Workspace/issues"
+    "url": "https://github.com/ArbtoS/SSH-Workspace/issues"
   },
-  "homepage": "https://github.com/ArbtoS/SSH-Server-Workspace#readme",
+  "homepage": "https://github.com/ArbtoS/SSH-Workspace#readme",
   "keywords": [
     "remote-ssh",
     "server",
@@ -36,154 +36,154 @@
     "workspace"
   ],
   "activationEvents": [
-    "onView:sshServerWorkspace.actions",
-    "onView:sshServerWorkspace.work",
-    "onView:sshServerWorkspace.system",
-    "onView:sshServerWorkspace.notes",
-    "onCommand:sshServerWorkspace.initialize",
-    "onCommand:sshServerWorkspace.refresh",
-    "onCommand:sshServerWorkspace.recreateData",
-    "onCommand:sshServerWorkspace.openNotes",
-    "onCommand:sshServerWorkspace.addNote",
-    "onCommand:sshServerWorkspace.openSystemStatus",
-    "onCommand:sshServerWorkspace.openFile",
-    "onCommand:sshServerWorkspace.trackCurrentFile",
-    "onCommand:sshServerWorkspace.trackPath",
-    "onCommand:sshServerWorkspace.editDisplayName",
-    "onCommand:sshServerWorkspace.clearDisplayName",
-    "onCommand:sshServerWorkspace.editComment",
-    "onCommand:sshServerWorkspace.deleteComment",
-    "onCommand:sshServerWorkspace.editControlCommands",
-    "onCommand:sshServerWorkspace.addExtraCommand",
-    "onCommand:sshServerWorkspace.removeExtraCommand",
-    "onCommand:sshServerWorkspace.runExtraCommand",
-    "onCommand:sshServerWorkspace.startFileAction",
-    "onCommand:sshServerWorkspace.stopFileAction",
-    "onCommand:sshServerWorkspace.restartFileAction",
-    "onCommand:sshServerWorkspace.statusFileAction",
-    "onCommand:sshServerWorkspace.copyPath",
-    "onCommand:sshServerWorkspace.updateMetadata"
+    "onView:sshWorkspace.actions",
+    "onView:sshWorkspace.work",
+    "onView:sshWorkspace.system",
+    "onView:sshWorkspace.notes",
+    "onCommand:sshWorkspace.initialize",
+    "onCommand:sshWorkspace.refresh",
+    "onCommand:sshWorkspace.recreateData",
+    "onCommand:sshWorkspace.openNotes",
+    "onCommand:sshWorkspace.addNote",
+    "onCommand:sshWorkspace.openSystemStatus",
+    "onCommand:sshWorkspace.openFile",
+    "onCommand:sshWorkspace.trackCurrentFile",
+    "onCommand:sshWorkspace.trackPath",
+    "onCommand:sshWorkspace.editDisplayName",
+    "onCommand:sshWorkspace.clearDisplayName",
+    "onCommand:sshWorkspace.editComment",
+    "onCommand:sshWorkspace.deleteComment",
+    "onCommand:sshWorkspace.editControlCommands",
+    "onCommand:sshWorkspace.addExtraCommand",
+    "onCommand:sshWorkspace.removeExtraCommand",
+    "onCommand:sshWorkspace.runExtraCommand",
+    "onCommand:sshWorkspace.startFileAction",
+    "onCommand:sshWorkspace.stopFileAction",
+    "onCommand:sshWorkspace.restartFileAction",
+    "onCommand:sshWorkspace.statusFileAction",
+    "onCommand:sshWorkspace.copyPath",
+    "onCommand:sshWorkspace.updateMetadata"
   ],
   "contributes": {
     "commands": [
       {
-        "command": "sshServerWorkspace.initialize",
-        "title": "SSH Server Workspace: Initialisieren"
+        "command": "sshWorkspace.initialize",
+        "title": "SSH Workspace: Initialisieren"
       },
       {
-        "command": "sshServerWorkspace.refresh",
-        "title": "SSH Server Workspace: Aktualisieren"
+        "command": "sshWorkspace.refresh",
+        "title": "SSH Workspace: Aktualisieren"
       },
       {
-        "command": "sshServerWorkspace.recreateData",
-        "title": "SSH Server Workspace: Daten neu erstellen"
+        "command": "sshWorkspace.recreateData",
+        "title": "SSH Workspace: Daten neu erstellen"
       },
       {
-        "command": "sshServerWorkspace.openNotes",
-        "title": "SSH Server Workspace: Notizen oeffnen"
+        "command": "sshWorkspace.openNotes",
+        "title": "SSH Workspace: Notizen oeffnen"
       },
       {
-        "command": "sshServerWorkspace.addNote",
-        "title": "SSH Server Workspace: Notiz hinzufuegen"
+        "command": "sshWorkspace.addNote",
+        "title": "SSH Workspace: Notiz hinzufuegen"
       },
       {
-        "command": "sshServerWorkspace.openSystemStatus",
-        "title": "SSH Server Workspace: Systemstatus oeffnen"
+        "command": "sshWorkspace.openSystemStatus",
+        "title": "SSH Workspace: Systemstatus oeffnen"
       },
       {
-        "command": "sshServerWorkspace.openFile",
-        "title": "SSH Server Workspace: Datei oeffnen"
+        "command": "sshWorkspace.openFile",
+        "title": "SSH Workspace: Datei oeffnen"
       },
       {
-        "command": "sshServerWorkspace.trackCurrentFile",
-        "title": "SSH Server Workspace: Aktuelle Datei tracken"
+        "command": "sshWorkspace.trackCurrentFile",
+        "title": "SSH Workspace: Aktuelle Datei tracken"
       },
       {
-        "command": "sshServerWorkspace.trackPath",
-        "title": "SSH Server Workspace: Pfad tracken"
+        "command": "sshWorkspace.trackPath",
+        "title": "SSH Workspace: Pfad tracken"
       },
       {
-        "command": "sshServerWorkspace.editDisplayName",
-        "title": "SSH Server Workspace: Klarname bearbeiten"
+        "command": "sshWorkspace.editDisplayName",
+        "title": "SSH Workspace: Klarname bearbeiten"
       },
       {
-        "command": "sshServerWorkspace.clearDisplayName",
-        "title": "SSH Server Workspace: Klarname loeschen"
+        "command": "sshWorkspace.clearDisplayName",
+        "title": "SSH Workspace: Klarname loeschen"
       },
       {
-        "command": "sshServerWorkspace.editComment",
-        "title": "SSH Server Workspace: Kommentar bearbeiten"
+        "command": "sshWorkspace.editComment",
+        "title": "SSH Workspace: Kommentar bearbeiten"
       },
       {
-        "command": "sshServerWorkspace.deleteComment",
-        "title": "SSH Server Workspace: Kommentar loeschen"
+        "command": "sshWorkspace.deleteComment",
+        "title": "SSH Workspace: Kommentar loeschen"
       },
       {
-        "command": "sshServerWorkspace.editControlCommands",
-        "title": "SSH Server Workspace: Service und Standardaktionen bearbeiten"
+        "command": "sshWorkspace.editControlCommands",
+        "title": "SSH Workspace: Service und Standardaktionen bearbeiten"
       },
       {
-        "command": "sshServerWorkspace.addExtraCommand",
-        "title": "SSH Server Workspace: Zusatzbefehl hinzufuegen"
+        "command": "sshWorkspace.addExtraCommand",
+        "title": "SSH Workspace: Zusatzbefehl hinzufuegen"
       },
       {
-        "command": "sshServerWorkspace.removeExtraCommand",
-        "title": "SSH Server Workspace: Zusatzbefehl entfernen"
+        "command": "sshWorkspace.removeExtraCommand",
+        "title": "SSH Workspace: Zusatzbefehl entfernen"
       },
       {
-        "command": "sshServerWorkspace.runExtraCommand",
-        "title": "SSH Server Workspace: Zusatzbefehl ausfuehren"
+        "command": "sshWorkspace.runExtraCommand",
+        "title": "SSH Workspace: Zusatzbefehl ausfuehren"
       },
       {
-        "command": "sshServerWorkspace.startFileAction",
-        "title": "SSH Server Workspace: Datei starten"
+        "command": "sshWorkspace.startFileAction",
+        "title": "SSH Workspace: Datei starten"
       },
       {
-        "command": "sshServerWorkspace.stopFileAction",
-        "title": "SSH Server Workspace: Datei stoppen"
+        "command": "sshWorkspace.stopFileAction",
+        "title": "SSH Workspace: Datei stoppen"
       },
       {
-        "command": "sshServerWorkspace.restartFileAction",
-        "title": "SSH Server Workspace: Datei neustarten"
+        "command": "sshWorkspace.restartFileAction",
+        "title": "SSH Workspace: Datei neustarten"
       },
       {
-        "command": "sshServerWorkspace.statusFileAction",
-        "title": "SSH Server Workspace: Datei-Status abrufen"
+        "command": "sshWorkspace.statusFileAction",
+        "title": "SSH Workspace: Datei-Status abrufen"
       },
       {
-        "command": "sshServerWorkspace.copyPath",
-        "title": "SSH Server Workspace: Pfad kopieren"
+        "command": "sshWorkspace.copyPath",
+        "title": "SSH Workspace: Pfad kopieren"
       },
       {
-        "command": "sshServerWorkspace.updateMetadata",
-        "title": "SSH Server Workspace: Metadaten aktualisieren"
+        "command": "sshWorkspace.updateMetadata",
+        "title": "SSH Workspace: Metadaten aktualisieren"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "sshServerWorkspace",
-          "title": "SSH Server Workspace",
-          "icon": "resources/ssh-server-workspace.svg"
+          "id": "sshWorkspace",
+          "title": "SSH Workspace",
+          "icon": "resources/ssh-workspace.svg"
         }
       ]
     },
     "views": {
-      "sshServerWorkspace": [
+      "sshWorkspace": [
         {
-          "id": "sshServerWorkspace.actions",
+          "id": "sshWorkspace.actions",
           "name": "Aktionen"
         },
         {
-          "id": "sshServerWorkspace.work",
+          "id": "sshWorkspace.work",
           "name": "Arbeitsseite"
         },
         {
-          "id": "sshServerWorkspace.system",
+          "id": "sshWorkspace.system",
           "name": "System"
         },
         {
-          "id": "sshServerWorkspace.notes",
+          "id": "sshWorkspace.notes",
           "name": "Notizen"
         }
       ]
@@ -191,149 +191,149 @@
     "menus": {
       "commandPalette": [
         {
-          "command": "sshServerWorkspace.openFile",
+          "command": "sshWorkspace.openFile",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.copyPath",
+          "command": "sshWorkspace.copyPath",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.deleteComment",
+          "command": "sshWorkspace.deleteComment",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.editControlCommands",
+          "command": "sshWorkspace.editControlCommands",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.addExtraCommand",
+          "command": "sshWorkspace.addExtraCommand",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.removeExtraCommand",
+          "command": "sshWorkspace.removeExtraCommand",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.runExtraCommand",
+          "command": "sshWorkspace.runExtraCommand",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.startFileAction",
+          "command": "sshWorkspace.startFileAction",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.stopFileAction",
+          "command": "sshWorkspace.stopFileAction",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.restartFileAction",
+          "command": "sshWorkspace.restartFileAction",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.statusFileAction",
+          "command": "sshWorkspace.statusFileAction",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.editDisplayName",
+          "command": "sshWorkspace.editDisplayName",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.clearDisplayName",
+          "command": "sshWorkspace.clearDisplayName",
           "when": "false"
         },
         {
-          "command": "sshServerWorkspace.openSystemStatus",
+          "command": "sshWorkspace.openSystemStatus",
           "when": "false"
         }
       ],
       "view/item/context": [
         {
-          "command": "sshServerWorkspace.openFile",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.openFile",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "inline@1"
         },
         {
-          "command": "sshServerWorkspace.editComment",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.editComment",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "2_edit@3"
         },
         {
-          "command": "sshServerWorkspace.deleteComment",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.deleteComment",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "2_edit@4"
         },
         {
-          "command": "sshServerWorkspace.editDisplayName",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.editDisplayName",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "2_edit@1"
         },
         {
-          "command": "sshServerWorkspace.clearDisplayName",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.clearDisplayName",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "2_edit@2"
         },
         {
-          "command": "sshServerWorkspace.copyPath",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.copyPath",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "3_copy@1"
         },
         {
-          "command": "sshServerWorkspace.editControlCommands",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.editControlCommands",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "4_actions@1"
         },
         {
-          "command": "sshServerWorkspace.addExtraCommand",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.addExtraCommand",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "4_actions@6"
         },
         {
-          "command": "sshServerWorkspace.startFileAction",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.startFileAction",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "4_actions@2"
         },
         {
-          "command": "sshServerWorkspace.stopFileAction",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.stopFileAction",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "4_actions@3"
         },
         {
-          "command": "sshServerWorkspace.restartFileAction",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.restartFileAction",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "4_actions@4"
         },
         {
-          "command": "sshServerWorkspace.statusFileAction",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.statusFileAction",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "4_actions@5"
         },
         {
-          "command": "sshServerWorkspace.updateMetadata",
-          "when": "view == sshServerWorkspace.work && viewItem == trackedFile",
+          "command": "sshWorkspace.updateMetadata",
+          "when": "view == sshWorkspace.work && viewItem == trackedFile",
           "group": "5_refresh@1"
         },
         {
-          "command": "sshServerWorkspace.openFile",
-          "when": "view == sshServerWorkspace.work && viewItem == logEntry",
+          "command": "sshWorkspace.openFile",
+          "when": "view == sshWorkspace.work && viewItem == logEntry",
           "group": "inline@1"
         },
         {
-          "command": "sshServerWorkspace.runExtraCommand",
-          "when": "view == sshServerWorkspace.work && viewItem == extraFileAction",
+          "command": "sshWorkspace.runExtraCommand",
+          "when": "view == sshWorkspace.work && viewItem == extraFileAction",
           "group": "inline@1"
         },
         {
-          "command": "sshServerWorkspace.removeExtraCommand",
-          "when": "view == sshServerWorkspace.work && viewItem == extraFileAction",
+          "command": "sshWorkspace.removeExtraCommand",
+          "when": "view == sshWorkspace.work && viewItem == extraFileAction",
           "group": "2_edit@1"
         }
       ]
     },
     "configuration": {
-      "title": "SSH Server Workspace",
+      "title": "SSH Workspace",
       "properties": {
-        "sshServerWorkspace.language": {
+        "sshWorkspace.language": {
           "type": "string",
           "default": "de",
           "enum": [
@@ -344,14 +344,14 @@
             "Deutsch",
             "English"
           ],
-          "description": "Language for SSH Server Workspace tree view labels, prompts, and notifications. Manifest-provided view names and command titles require a window reload and may still follow VS Code's static extension manifest handling."
+          "description": "Language for SSH Workspace tree view labels, prompts, and notifications. Manifest-provided view names and command titles require a window reload and may still follow VS Code's static extension manifest handling."
         }
       }
     }
   },
   "scripts": {
     "compile": "tsc -p ./",
-    "package": "vsce package --out ssh-server-workspace-0.3.0.vsix",
+    "package": "vsce package --out ssh-workspace-0.3.2.vsix",
     "publish:marketplace": "vsce publish",
     "watch": "tsc -watch -p ./",
     "vscode:prepublish": "npm run compile"

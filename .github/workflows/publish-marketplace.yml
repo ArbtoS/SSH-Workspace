@@ -27,6 +27,6 @@ jobs:
         run: npm run package
 
       - name: Publish to Visual Studio Marketplace
-        run: npx vsce publish --packagePath ssh-server-workspace-*.vsix -p "$VSCE_PAT"
+        run: npx vsce publish --packagePath ssh-workspace-*.vsix -p "$VSCE_PAT"
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}

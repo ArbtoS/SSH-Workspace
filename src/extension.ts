@@ -22,22 +22,22 @@ export function activate(context: vscode.ExtensionContext): void {
   };
 
   context.subscriptions.push(
-    vscode.window.createTreeView("sshServerWorkspace.actions", {
+    vscode.window.createTreeView("sshWorkspace.actions", {
       treeDataProvider: actionsProvider
     }),
-    vscode.window.createTreeView("sshServerWorkspace.work", {
+    vscode.window.createTreeView("sshWorkspace.work", {
       treeDataProvider: workProvider,
       dragAndDropController: workProvider,
       showCollapseAll: true
     }),
-    vscode.window.createTreeView("sshServerWorkspace.system", {
+    vscode.window.createTreeView("sshWorkspace.system", {
       treeDataProvider: systemProvider
     }),
-    vscode.window.createTreeView("sshServerWorkspace.notes", {
+    vscode.window.createTreeView("sshWorkspace.notes", {
       treeDataProvider: notesProvider
     }),
     vscode.workspace.onDidChangeConfiguration((event) => {
-      if (event.affectsConfiguration("sshServerWorkspace.language")) {
+      if (event.affectsConfiguration("sshWorkspace.language")) {
         refreshAll();
       }
     })
