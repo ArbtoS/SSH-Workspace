@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.3
+
+- Simplified service configuration so tracked files only ask for a serviceName.
+- Standard actions Start, Stop, Restart, and Status are now generated automatically from that service.
+
 ## 0.3.2
 
 - Updated GitHub repository metadata to the renamed `SSH-Workspace` repository and bumped the package version to keep the renamed package/repository state clearly separated.

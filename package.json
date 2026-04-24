@@ -2,7 +2,7 @@
   "name": "ssh-workspace",
   "displayName": "SSH Workspace",
   "description": "A small Remote-SSH workspace helper for system notes, server file tracking, and basic system information.",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "publisher": "ArbtoS",
   "license": "MIT",
   "icon": "resources/ssh-workspace.png",
@@ -120,7 +120,7 @@
       },
       {
         "command": "sshWorkspace.editControlCommands",
-        "title": "SSH Workspace: Service und Standardaktionen bearbeiten"
+        "title": "SSH Workspace: Service bearbeiten"
       },
       {
         "command": "sshWorkspace.addExtraCommand",
@@ -351,7 +351,7 @@
   },
   "scripts": {
     "compile": "tsc -p ./",
-    "package": "vsce package --out ssh-workspace-0.3.2.vsix",
+    "package": "vsce package --out ssh-workspace-0.3.3.vsix",
     "publish:marketplace": "vsce publish",
     "watch": "tsc -watch -p ./",
     "vscode:prepublish": "npm run compile"

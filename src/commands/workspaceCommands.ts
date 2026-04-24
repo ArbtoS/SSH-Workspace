@@ -359,20 +359,6 @@ async function loadTrackedFileForAction(store: WorkspaceStore, filePath: string)
   return { data, trackedFile };
 }
 
-async function promptControlCommand(
-  actionLabel: string,
-  currentValue: string | undefined,
-  filePath: string
-): Promise<string | undefined> {
-  return vscode.window.showInputBox({
-    title: t("editControlCommands"),
-    prompt: t("controlCommandPrompt", { action: actionLabel }),
-    value: currentValue || "",
-    placeHolder: t("controlCommandPlaceholder"),
-    ignoreFocusOut: true,
-    valueSelection: [0, currentValue?.length ?? 0]
-  });
-}
 
 export async function editControlCommands(store: WorkspaceStore, views: RefreshableViews, input?: unknown): Promise<void> {
   const filePath = extractFilePath(input);
@@ -397,35 +383,7 @@ export async function editControlCommands(store: WorkspaceStore, views: Refresha
     return;
   }
 
-  const start = await promptControlCommand(t("actionStart"), loaded.trackedFile.controlCommands?.start, loaded.trackedFile.path);
-  if (start === undefined) {
-    return;
-  }
-
-  const stop = await promptControlCommand(t("actionStop"), loaded.trackedFile.controlCommands?.stop, loaded.trackedFile.path);
-  if (stop === undefined) {
-    return;
-  }
-
-  const restart = await promptControlCommand(
-    t("actionRestart"),
-    loaded.trackedFile.controlCommands?.restart,
-    loaded.trackedFile.path
-  );
-  if (restart === undefined) {
-    return;
-  }
-
-  const status = await promptControlCommand(
-    t("actionStatus"),
-    loaded.trackedFile.controlCommands?.status,
-    loaded.trackedFile.path
-  );
-  if (status === undefined) {
-    return;
-  }
-
-  setTrackedFileControlCommands(loaded.data, loaded.trackedFile.path, { serviceName, start, stop, restart, status });
+  setTrackedFileControlCommands(loaded.data, loaded.trackedFile.path, { serviceName });
   await store.save(loaded.data);
   views.refreshAll();
   vscode.window.showInformationMessage(t("controlCommandsSaved"));
