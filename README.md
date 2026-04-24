@@ -20,6 +20,8 @@ Die Extension läuft im bereits verbundenen Remote-Workspace. Remote-SSH bleibt 
 - Datei-Tracking für bewusst ausgewählte Serverdateien
 - Klarname und Kommentar pro getrackter Datei
 - Optionale Start/Stop/Restart-Befehle pro getrackter Datei
+- Optionaler Systemd-Service pro Datei für automatische Standardaktionen
+- Zusätzliche frei benennbare Befehle pro Datei
 - Drag-and-Drop-Sortierung in der Arbeitsliste
 - Rohlog für erkannte Änderungen an getrackten Dateien
 - Systeminfos wie Hostname, OS, Kernel, Architektur und Haupt-IP
@@ -85,7 +87,9 @@ Eine Datei kann auf zwei Wegen aufgenommen werden:
 
 Pro getrackter Datei können Klarname und Kommentar gepflegt werden. Die Arbeitsliste kann per Drag and Drop manuell sortiert werden. Interne Server-Workspace-Dateien wie `NOTIZEN.md`, `SYSTEMSTATUS.md` und `workspace-data.json` werden nicht in der Arbeitsliste angezeigt.
 
-Zusätzlich kann jede getrackte Datei optionale Shell-Befehle für `Starten`, `Stoppen` und `Neustarten` speichern. Diese Befehle lassen sich per Kontextmenü hinterlegen und werden im integrierten Remote-Terminal ausgeführt.
+Zusätzlich kann jede getrackte Datei einen optionalen Systemd-Service hinterlegen, zum Beispiel `nginx.service`. Dann werden `Starten`, `Stoppen`, `Neustarten` und `Status` automatisch über `systemctl` im integrierten Remote-Terminal ausgeführt.
+
+Für Sonderfälle können Standardaktionen weiterhin mit eigenen Shell-Befehlen überschrieben werden. Außerdem lassen sich pro Datei zusätzliche frei benennbare Befehle anlegen und später wieder entfernen.
 
 #### System
 
@@ -182,6 +186,8 @@ The extension runs inside an already connected remote workspace. VS Code Remote-
 - File tracking for deliberately selected server files
 - Display name and comment per tracked file
 - Optional start/stop/restart commands per tracked file
+- Optional systemd service per file for automatic default actions
+- Additional custom-named commands per file
 - Drag-and-drop ordering in the work list
 - Raw log for detected changes in tracked files
 - System information such as hostname, OS, kernel, architecture, and main IP
@@ -247,7 +253,9 @@ A file can be added in two ways:
 
 Each tracked file can have a display name and a comment. The work list can be manually sorted with drag and drop. Internal SSH Server Workspace files such as `NOTIZEN.md`, `SYSTEMSTATUS.md`, and `workspace-data.json` are hidden from the work list.
 
-Each tracked file can also store optional shell commands for `Start`, `Stop`, and `Restart`. These commands can be configured from the context menu and are executed in the integrated remote terminal.
+Each tracked file can also store an optional systemd service such as `nginx.service`. When set, `Start`, `Stop`, `Restart`, and `Status` are derived automatically through `systemctl` and executed in the integrated remote terminal.
+
+For special cases, these default actions can still be overridden with custom shell commands. In addition, each tracked file can store extra custom-named commands that can be added and removed later.
 
 #### System
 

@@ -50,3 +50,17 @@ export function extractFilePath(input: unknown): string | undefined {
 
   return undefined;
 }
+
+export function extractExtraCommandId(input: unknown): string | undefined {
+  if (typeof input === "object" && input && "extraCommandId" in input) {
+    const extraCommandId = input.extraCommandId as unknown;
+    return typeof extraCommandId === "string" ? extraCommandId : undefined;
+  }
+
+  if (typeof input === "object" && input && "extraCommand" in input) {
+    const extraCommand = input.extraCommand as { id?: unknown };
+    return typeof extraCommand.id === "string" ? extraCommand.id : undefined;
+  }
+
+  return undefined;
+}

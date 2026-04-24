@@ -1,6 +1,9 @@
 import * as path from "path";
 import * as vscode from "vscode";
+import { resolveControlCommand } from "../core/controlCommands";
 import {
+  addTrackedFileExtraCommand,
+  removeTrackedFileExtraCommand,
   setTrackedFileControlCommands,
   updateTrackedFileMetadata,
   refreshTrackedFiles,
@@ -11,7 +14,7 @@ import { t } from "../core/localization";
 import { readSystemInfo } from "../core/systemInfo";
 import { createDefaultWorkspaceData } from "../core/types";
 import { WorkspaceStore } from "../core/workspaceStore";
-import { extractFilePath } from "./commandUtils";
+import { extractExtraCommandId, extractFilePath } from "./commandUtils";
 
 export interface RefreshableViews {
   refreshAll(): void;
@@ -383,6 +386,17 @@ export async function editControlCommands(store: WorkspaceStore, views: Refresha
     return;
   }
 
+  const serviceName = await vscode.window.showInputBox({
+    title: t("editControlCommands"),
+    prompt: t("serviceNamePrompt"),
+    value: loaded.trackedFile.controlCommands?.serviceName || "",
+    placeHolder: t("serviceNamePlaceholder"),
+    ignoreFocusOut: true
+  });
+  if (serviceName === undefined) {
+    return;
+  }
+
   const start = await promptControlCommand(t("actionStart"), loaded.trackedFile.controlCommands?.start, loaded.trackedFile.path);
   if (start === undefined) {
     return;
@@ -411,7 +425,7 @@ export async function editControlCommands(store: WorkspaceStore, views: Refresha
     return;
   }
 
-  setTrackedFileControlCommands(loaded.data, loaded.trackedFile.path, { start, stop, restart, status });
+  setTrackedFileControlCommands(loaded.data, loaded.trackedFile.path, { serviceName, start, stop, restart, status });
   await store.save(loaded.data);
   views.refreshAll();
   vscode.window.showInformationMessage(t("controlCommandsSaved"));
@@ -433,7 +447,7 @@ async function runControlCommand(
     return;
   }
 
-  const command = loaded.trackedFile.controlCommands?.[action]?.trim();
+  const command = resolveControlCommand(loaded.trackedFile.controlCommands, action);
   const actionLabel =
     action === "start"
       ? t("actionStart")
@@ -469,4 +483,91 @@ export async function runRestartCommand(store: WorkspaceStore, input?: unknown):
 
 export async function runStatusCommand(store: WorkspaceStore, input?: unknown): Promise<void> {
   await runControlCommand(store, input, "status");
+}
+
+export async function addExtraCommand(store: WorkspaceStore, views: RefreshableViews, input?: unknown): Promise<void> {
+  const filePath = extractFilePath(input);
+  if (!filePath) {
+    vscode.window.showWarningMessage(t("noFileSelected"));
+    return;
+  }
+
+  const loaded = await loadTrackedFileForAction(store, filePath);
+  if (!loaded) {
+    return;
+  }
+
+  const label = await vscode.window.showInputBox({
+    title: t("actionAddExtraCommand"),
+    prompt: t("extraCommandLabelPrompt"),
+    ignoreFocusOut: true,
+    validateInput: (value) => (value.trim() ? undefined : t("extraCommandLabelRequired"))
+  });
+  if (label === undefined) {
+    return;
+  }
+
+  const command = await vscode.window.showInputBox({
+    title: t("actionAddExtraCommand"),
+    prompt: t("extraCommandCommandPrompt"),
+    ignoreFocusOut: true,
+    validateInput: (value) => (value.trim() ? undefined : t("extraCommandCommandRequired"))
+  });
+  if (command === undefined) {
+    return;
+  }
+
+  addTrackedFileExtraCommand(loaded.data, loaded.trackedFile.path, { label, command });
+  await store.save(loaded.data);
+  views.refreshAll();
+  vscode.window.showInformationMessage(t("extraCommandAdded"));
+}
+
+export async function removeExtraCommand(store: WorkspaceStore, views: RefreshableViews, input?: unknown): Promise<void> {
+  const filePath = extractFilePath(input);
+  const extraCommandId = extractExtraCommandId(input);
+  if (!filePath || !extraCommandId) {
+    vscode.window.showWarningMessage(t("extraCommandNotFound"));
+    return;
+  }
+
+  const data = await loadRequiredData(store);
+  if (!data) {
+    return;
+  }
+
+  if (!removeTrackedFileExtraCommand(data, filePath, extraCommandId)) {
+    vscode.window.showWarningMessage(t("extraCommandNotFound"));
+    return;
+  }
+
+  await store.save(data);
+  views.refreshAll();
+  vscode.window.showInformationMessage(t("extraCommandRemoved"));
+}
+
+export async function runExtraCommand(store: WorkspaceStore, input?: unknown): Promise<void> {
+  const filePath = extractFilePath(input);
+  const extraCommandId = extractExtraCommandId(input);
+  if (!filePath || !extraCommandId) {
+    vscode.window.showWarningMessage(t("extraCommandNotFound"));
+    return;
+  }
+
+  const loaded = await loadTrackedFileForAction(store, filePath);
+  if (!loaded) {
+    return;
+  }
+
+  const extraCommand = loaded.trackedFile.extraCommands?.find((command) => command.id === extraCommandId);
+  if (!extraCommand) {
+    vscode.window.showWarningMessage(t("extraCommandNotFound"));
+    return;
+  }
+
+  const terminalName = "SSH Server Workspace";
+  const terminal = vscode.window.terminals.find((item) => item.name === terminalName) || vscode.window.createTerminal(terminalName);
+  terminal.show();
+  terminal.sendText(extraCommand.command, true);
+  vscode.window.showInformationMessage(t("runningControlCommand", { action: extraCommand.label }));
 }

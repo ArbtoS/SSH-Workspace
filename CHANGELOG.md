@@ -4,6 +4,8 @@
 
 - Added a per-file `Status` command alongside start/stop/restart actions.
 - Changed file actions in the work list from plain details to directly clickable entries.
+- Added a `serviceName`-based systemd workflow for default start/stop/restart/status actions.
+- Added removable extra commands per tracked file.
 
 ## 0.2.2
 

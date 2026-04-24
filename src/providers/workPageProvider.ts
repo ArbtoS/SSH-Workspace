@@ -1,11 +1,20 @@
 import * as vscode from "vscode";
+import { resolveControlCommand } from "../core/controlCommands";
 import { compareIsoDesc, formatDisplayDate } from "../core/dateUtils";
 import { t } from "../core/localization";
-import { ChangeLogEntry, TrackedFile } from "../core/types";
+import { ChangeLogEntry, TrackedFile, TrackedFileExtraCommand } from "../core/types";
 import { WorkspaceStore } from "../core/workspaceStore";
 import { CommandItem, MessageItem } from "./commonItems";
 
-type WorkNode = WorkSectionItem | TrackedFileItem | DetailItem | FileActionItem | LogEntryItem | MessageItem | CommandItem;
+type WorkNode =
+  | WorkSectionItem
+  | TrackedFileItem
+  | DetailItem
+  | FileActionItem
+  | ExtraCommandItem
+  | LogEntryItem
+  | MessageItem
+  | CommandItem;
 const trackedFileMime = "application/vnd.ssh-server-workspace.tracked-file";
 
 function sortTrackedFiles(files: TrackedFile[]): TrackedFile[] {
@@ -54,10 +63,11 @@ export class TrackedFileItem extends vscode.TreeItem {
         `${t("lastChanged")}: ${formatDisplayDate(file.lastModifiedAt)}`,
         `${file.owner || "-"}:${file.group || "-"} | ${file.mode || "-"} | ${file.changeCount} ${t("changes")}`,
         `${t("comment")}: ${file.comment || "-"}`,
-        `${t("controlStart")}: \`${file.controlCommands?.start || "-"}\``,
-        `${t("controlStop")}: \`${file.controlCommands?.stop || "-"}\``,
-        `${t("controlRestart")}: \`${file.controlCommands?.restart || "-"}\``,
-        `${t("controlStatus")}: \`${file.controlCommands?.status || "-"}\``
+        `${t("service")}: \`${file.controlCommands?.serviceName || "-"}\``,
+        `${t("controlStart")}: \`${resolveControlCommand(file.controlCommands, "start") || "-"}\``,
+        `${t("controlStop")}: \`${resolveControlCommand(file.controlCommands, "stop") || "-"}\``,
+        `${t("controlRestart")}: \`${resolveControlCommand(file.controlCommands, "restart") || "-"}\``,
+        `${t("controlStatus")}: \`${resolveControlCommand(file.controlCommands, "status") || "-"}\``
       ].join("\n")
     );
   }
@@ -89,6 +99,21 @@ class FileActionItem extends vscode.TreeItem {
       arguments: [file.path]
     };
     this.tooltip = configuredCommand || label;
+  }
+}
+
+class ExtraCommandItem extends vscode.TreeItem {
+  public constructor(public readonly file: TrackedFile, public readonly extraCommand: TrackedFileExtraCommand) {
+    super(extraCommand.label, vscode.TreeItemCollapsibleState.None);
+    this.contextValue = "extraFileAction";
+    this.description = extraCommand.command;
+    this.iconPath = new vscode.ThemeIcon("terminal");
+    this.command = {
+      command: "sshServerWorkspace.runExtraCommand",
+      title: extraCommand.label,
+      arguments: [{ path: file.path, extraCommandId: extraCommand.id }]
+    };
+    this.tooltip = extraCommand.command;
   }
 }
 
@@ -154,35 +179,52 @@ export class WorkPageProvider implements vscode.TreeDataProvider<WorkNode>, vsco
           new DetailItem(`${t("lastChanged")}: ${formatDisplayDate(file.lastModifiedAt)}`),
           new DetailItem(`${file.owner || "-"}:${file.group || "-"} | ${file.mode || "-"} | ${file.changeCount} ${t("changes")}`),
           new DetailItem(`${t("comment")}: ${file.comment || "-"}`),
+          new DetailItem(`${t("service")}: ${file.controlCommands?.serviceName || "-"}`),
           new FileActionItem(
             t("actionStart"),
             "sshServerWorkspace.startFileAction",
             file,
-            file.controlCommands?.start,
+            resolveControlCommand(file.controlCommands, "start"),
             "play"
           ),
           new FileActionItem(
             t("actionStop"),
             "sshServerWorkspace.stopFileAction",
             file,
-            file.controlCommands?.stop,
+            resolveControlCommand(file.controlCommands, "stop"),
             "primitive-square"
           ),
           new FileActionItem(
             t("actionRestart"),
             "sshServerWorkspace.restartFileAction",
             file,
-            file.controlCommands?.restart,
+            resolveControlCommand(file.controlCommands, "restart"),
             "refresh"
           ),
           new FileActionItem(
             t("actionStatus"),
             "sshServerWorkspace.statusFileAction",
             file,
-            file.controlCommands?.status,
+            resolveControlCommand(file.controlCommands, "status"),
             "pulse"
+          ),
+          new CommandItem(
+            t("actionAddExtraCommand"),
+            {
+              command: "sshServerWorkspace.addExtraCommand",
+              title: t("actionAddExtraCommand"),
+              arguments: [{ path: file.path }]
+            },
+            "add"
           )
         ];
+
+        const extraCommandItems = (file.extraCommands ?? []).map((extraCommand) => new ExtraCommandItem(file, extraCommand));
+
+        if (extraCommandItems.length > 0) {
+          details.push(new DetailItem(`${t("extraCommands")}:`));
+          details.push(...extraCommandItems);
+        }
 
         if (!file.exists) {
           details.unshift(new DetailItem(t("fileMissing")));

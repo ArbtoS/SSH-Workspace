@@ -9,10 +9,17 @@ export interface ServerSystemInfo {
 }
 
 export interface TrackedFileControlCommands {
+  serviceName?: string;
   start?: string;
   stop?: string;
   restart?: string;
   status?: string;
+}
+
+export interface TrackedFileExtraCommand {
+  id: string;
+  label: string;
+  command: string;
 }
 
 export interface TrackedFile {
@@ -28,6 +35,7 @@ export interface TrackedFile {
   changeCount: number;
   comment: string;
   controlCommands?: TrackedFileControlCommands;
+  extraCommands?: TrackedFileExtraCommand[];
   exists: boolean;
 }
 

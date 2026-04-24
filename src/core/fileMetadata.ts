@@ -3,7 +3,7 @@ import * as path from "path";
 import { execFile } from "child_process";
 import { promisify } from "util";
 import { sameSecond, toLocalIsoString } from "./dateUtils";
-import { TrackedFile, TrackedFileControlCommands, WorkspaceData } from "./types";
+import { TrackedFile, TrackedFileControlCommands, TrackedFileExtraCommand, WorkspaceData } from "./types";
 
 const execFileAsync = promisify(execFile);
 
@@ -120,6 +120,7 @@ export async function updateTrackedFileMetadata(data: WorkspaceData, filePath: s
     changeCount: existing?.changeCount ?? 0,
     comment: existing?.comment ?? "",
     controlCommands: existing?.controlCommands,
+    extraCommands: existing?.extraCommands ?? [],
     exists: metadata.exists
   };
 
@@ -185,6 +186,7 @@ export function setTrackedFileControlCommands(
   }
 
   const nextCommands: TrackedFileControlCommands = {
+    serviceName: controlCommands.serviceName?.trim() || undefined,
     start: controlCommands.start?.trim() || undefined,
     stop: controlCommands.stop?.trim() || undefined,
     restart: controlCommands.restart?.trim() || undefined,
@@ -194,7 +196,53 @@ export function setTrackedFileControlCommands(
   data.trackedFiles[index] = {
     ...data.trackedFiles[index],
     controlCommands:
-      nextCommands.start || nextCommands.stop || nextCommands.restart || nextCommands.status ? nextCommands : undefined
+      nextCommands.serviceName || nextCommands.start || nextCommands.stop || nextCommands.restart || nextCommands.status
+        ? nextCommands
+        : undefined
+  };
+
+  return true;
+}
+
+export function addTrackedFileExtraCommand(
+  data: WorkspaceData,
+  filePath: string,
+  extraCommand: Omit<TrackedFileExtraCommand, "id">
+): TrackedFileExtraCommand | undefined {
+  const index = findTrackedFileIndex(data, filePath);
+  if (index < 0) {
+    return undefined;
+  }
+
+  const next: TrackedFileExtraCommand = {
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    label: extraCommand.label.trim(),
+    command: extraCommand.command.trim()
+  };
+
+  data.trackedFiles[index] = {
+    ...data.trackedFiles[index],
+    extraCommands: [...(data.trackedFiles[index].extraCommands ?? []), next]
+  };
+
+  return next;
+}
+
+export function removeTrackedFileExtraCommand(data: WorkspaceData, filePath: string, commandId: string): boolean {
+  const index = findTrackedFileIndex(data, filePath);
+  if (index < 0) {
+    return false;
+  }
+
+  const current = data.trackedFiles[index].extraCommands ?? [];
+  const next = current.filter((command) => command.id !== commandId);
+  if (next.length === current.length) {
+    return false;
+  }
+
+  data.trackedFiles[index] = {
+    ...data.trackedFiles[index],
+    extraCommands: next
   };
 
   return true;

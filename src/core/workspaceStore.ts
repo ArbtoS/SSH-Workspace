@@ -6,21 +6,42 @@ import { notesTemplate, systemStatusTemplate } from "./templates";
 import {
   createDefaultWorkspaceData,
   createEmptySystemInfo,
+  TrackedFileExtraCommand,
   TrackedFile,
   WorkspaceData
 } from "./types";
 
+function normalizeExtraCommand(raw: TrackedFileExtraCommand): TrackedFileExtraCommand | undefined {
+  const label = raw.label?.trim();
+  const command = raw.command?.trim();
+  if (!label || !command) {
+    return undefined;
+  }
+
+  return {
+    id: raw.id?.trim() || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    label,
+    command
+  };
+}
+
 function normalizeTrackedFile(raw: TrackedFile): TrackedFile {
   return {
     ...raw,
-        controlCommands: raw.controlCommands
-          ? {
-              start: raw.controlCommands.start?.trim() || undefined,
-              stop: raw.controlCommands.stop?.trim() || undefined,
-              restart: raw.controlCommands.restart?.trim() || undefined,
-              status: raw.controlCommands.status?.trim() || undefined
-            }
-          : undefined
+    controlCommands: raw.controlCommands
+      ? {
+          serviceName: raw.controlCommands.serviceName?.trim() || undefined,
+          start: raw.controlCommands.start?.trim() || undefined,
+          stop: raw.controlCommands.stop?.trim() || undefined,
+          restart: raw.controlCommands.restart?.trim() || undefined,
+          status: raw.controlCommands.status?.trim() || undefined
+        }
+      : undefined,
+    extraCommands: Array.isArray(raw.extraCommands)
+      ? raw.extraCommands
+          .map((command) => normalizeExtraCommand(command as TrackedFileExtraCommand))
+          .filter((command): command is TrackedFileExtraCommand => Boolean(command))
+      : []
   };
 }
 

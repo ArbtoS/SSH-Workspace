@@ -6,6 +6,7 @@ import { SystemProvider } from "../providers/systemProvider";
 import { WorkPageProvider } from "../providers/workPageProvider";
 import { registerSafeCommand } from "./commandUtils";
 import {
+  addExtraCommand,
   addNote,
   clearDisplayName,
   copyPath,
@@ -19,7 +20,9 @@ import {
   openTrackedFile,
   recreateWorkspaceData,
   refreshWorkspace,
+  removeExtraCommand,
   runRestartCommand,
+  runExtraCommand,
   runStatusCommand,
   runStartCommand,
   runStopCommand,
@@ -63,6 +66,9 @@ export function registerCommands(
   registerSafeCommand(context, "sshServerWorkspace.editComment", (input) => editComment(store, views, input));
   registerSafeCommand(context, "sshServerWorkspace.deleteComment", (input) => deleteComment(store, views, input));
   registerSafeCommand(context, "sshServerWorkspace.editControlCommands", (input) => editControlCommands(store, views, input));
+  registerSafeCommand(context, "sshServerWorkspace.addExtraCommand", (input) => addExtraCommand(store, views, input));
+  registerSafeCommand(context, "sshServerWorkspace.removeExtraCommand", (input) => removeExtraCommand(store, views, input));
+  registerSafeCommand(context, "sshServerWorkspace.runExtraCommand", (input) => runExtraCommand(store, input));
   registerSafeCommand(context, "sshServerWorkspace.startFileAction", (input) => runStartCommand(store, input));
   registerSafeCommand(context, "sshServerWorkspace.stopFileAction", (input) => runStopCommand(store, input));
   registerSafeCommand(context, "sshServerWorkspace.restartFileAction", (input) => runRestartCommand(store, input));
