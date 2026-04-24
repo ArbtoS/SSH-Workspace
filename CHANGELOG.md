@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Added optional per-file start/stop/restart shell commands in the work list.
+
 ## 0.2.0
 
 - Added optional per-file start/stop/restart shell commands in the work list.

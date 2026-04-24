@@ -2,7 +2,7 @@
   "name": "ssh-server-workspace",
   "displayName": "SSH Server Workspace",
   "description": "A small Remote-SSH workspace helper for system notes, server file tracking, and basic system information.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "ArbtoS",
   "license": "MIT",
   "icon": "resources/ssh-server-workspace.png",
@@ -295,7 +295,7 @@
   },
   "scripts": {
     "compile": "tsc -p ./",
-    "package": "vsce package --out ssh-server-workspace-0.2.0.vsix",
+    "package": "vsce package --out ssh-server-workspace-0.2.1.vsix",
     "publish:marketplace": "vsce publish",
     "watch": "tsc -watch -p ./",
     "vscode:prepublish": "npm run compile"
