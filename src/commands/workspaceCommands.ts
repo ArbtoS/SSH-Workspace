@@ -1,4 +1,5 @@
 import * as path from "path";
+import { exec } from "child_process";
 import * as vscode from "vscode";
 import { resolveControlCommand } from "../core/controlCommands";
 import {
@@ -10,9 +11,10 @@ import {
   setTrackedFileComment,
   setTrackedFileDisplayName
 } from "../core/fileMetadata";
+import { toLocalIsoString } from "../core/dateUtils";
 import { t } from "../core/localization";
 import { readSystemInfo } from "../core/systemInfo";
-import { createDefaultWorkspaceData, WorkspaceCommand } from "../core/types";
+import { createDefaultWorkspaceData } from "../core/types";
 import { WorkspaceStore } from "../core/workspaceStore";
 import { extractExtraCommandId, extractFilePath, extractSavedCommandId } from "./commandUtils";
 
@@ -751,7 +753,29 @@ export async function deleteSavedCommand(store: WorkspaceStore, views: Refreshab
   vscode.window.showInformationMessage(t("savedCommandDeleted", { name: loaded.savedCommand.name }));
 }
 
-export async function runSavedCommand(store: WorkspaceStore, input?: unknown): Promise<void> {
+async function executeSavedCommand(command: string): Promise<{ success: boolean; exitCode: number | null; output: string }> {
+  return new Promise((resolve) => {
+    exec(
+      command,
+      {
+        shell: "/bin/bash",
+        timeout: 120000,
+        maxBuffer: 1024 * 1024
+      },
+      (error, stdout, stderr) => {
+        const output = [stdout, stderr].filter((value) => value && value.trim()).join("\n").trim();
+        const exitCode = typeof error === "object" && error && "code" in error && typeof error.code === "number" ? error.code : error ? 1 : 0;
+        resolve({
+          success: !error,
+          exitCode,
+          output
+        });
+      }
+    );
+  });
+}
+
+export async function runSavedCommand(store: WorkspaceStore, views: RefreshableViews, input?: unknown): Promise<void> {
   const savedCommandId = extractSavedCommandId(input);
   if (!savedCommandId) {
     vscode.window.showWarningMessage(t("savedCommandNotFound"));
@@ -763,5 +787,25 @@ export async function runSavedCommand(store: WorkspaceStore, input?: unknown): P
     return;
   }
 
-  runCommandInWorkspaceTerminal(loaded.savedCommand.name, loaded.savedCommand.command);
+  const startedAt = toLocalIsoString();
+  const result = await executeSavedCommand(loaded.savedCommand.command);
+  const finishedAt = toLocalIsoString();
+
+  store.addSavedCommandRun(loaded.data, {
+    savedCommandId: loaded.savedCommand.id,
+    name: loaded.savedCommand.name,
+    command: loaded.savedCommand.command,
+    startedAt,
+    finishedAt,
+    exitCode: result.exitCode,
+    success: result.success,
+    output: result.output
+  });
+  await store.save(loaded.data);
+
+  if (result.success) {
+    vscode.window.showInformationMessage(t("savedCommandRunSuccess", { name: loaded.savedCommand.name }));
+  } else {
+    vscode.window.showWarningMessage(t("savedCommandRunFailed", { name: loaded.savedCommand.name }));
+  }
 }

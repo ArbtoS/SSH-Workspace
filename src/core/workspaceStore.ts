@@ -14,9 +14,10 @@ import { notesTemplate, systemStatusTemplate } from "./templates";
 import {
   createDefaultWorkspaceData,
   createEmptySystemInfo,
-  TrackedFileExtraCommand,
   TrackedFile,
+  TrackedFileExtraCommand,
   WorkspaceCommand,
+  WorkspaceCommandRun,
   WorkspaceData,
   WorkspaceNote
 } from "./types";
@@ -59,15 +60,12 @@ function compareNotePath(left: WorkspaceNote, right: WorkspaceNote): number {
   if (typeof left.sortOrder === "number" && typeof right.sortOrder === "number") {
     return left.sortOrder - right.sortOrder;
   }
-
   if (typeof left.sortOrder === "number") {
     return -1;
   }
-
   if (typeof right.sortOrder === "number") {
     return 1;
   }
-
   return left.title.localeCompare(right.title, undefined, { sensitivity: "base" });
 }
 
@@ -75,16 +73,17 @@ function compareSavedCommand(left: WorkspaceCommand, right: WorkspaceCommand): n
   if (typeof left.sortOrder === "number" && typeof right.sortOrder === "number") {
     return left.sortOrder - right.sortOrder;
   }
-
   if (typeof left.sortOrder === "number") {
     return -1;
   }
-
   if (typeof right.sortOrder === "number") {
     return 1;
   }
-
   return left.name.localeCompare(right.name, undefined, { sensitivity: "base" });
+}
+
+function compareSavedCommandRun(left: WorkspaceCommandRun, right: WorkspaceCommandRun): number {
+  return Date.parse(right.finishedAt) - Date.parse(left.finishedAt);
 }
 
 function slugifyNoteTitle(value: string): string {
@@ -139,10 +138,7 @@ export class WorkspaceStore {
 
     return [...deduplicated.values()]
       .sort(compareNotePath)
-      .map((note, index) => ({
-        ...note,
-        sortOrder: index
-      }));
+      .map((note, index) => ({ ...note, sortOrder: index }));
   }
 
   private normalizeSavedCommands(rawCommands: unknown): WorkspaceCommand[] {
@@ -173,10 +169,43 @@ export class WorkspaceStore {
 
     return commands
       .sort(compareSavedCommand)
-      .map((entry, index) => ({
-        ...entry,
-        sortOrder: index
-      }));
+      .map((entry, index) => ({ ...entry, sortOrder: index }));
+  }
+
+  private normalizeSavedCommandRuns(rawRuns: unknown): WorkspaceCommandRun[] {
+    const runs: WorkspaceCommandRun[] = [];
+
+    if (Array.isArray(rawRuns)) {
+      for (const raw of rawRuns) {
+        if (!raw || typeof raw !== "object") {
+          continue;
+        }
+
+        const candidate = raw as Partial<WorkspaceCommandRun>;
+        const savedCommandId = candidate.savedCommandId?.trim();
+        const name = candidate.name?.trim();
+        const command = candidate.command?.trim();
+        const startedAt = candidate.startedAt?.trim();
+        const finishedAt = candidate.finishedAt?.trim();
+        if (!savedCommandId || !name || !command || !startedAt || !finishedAt) {
+          continue;
+        }
+
+        runs.push({
+          id: candidate.id?.trim() || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+          savedCommandId,
+          name,
+          command,
+          startedAt,
+          finishedAt,
+          exitCode: typeof candidate.exitCode === "number" ? candidate.exitCode : null,
+          success: Boolean(candidate.success),
+          output: candidate.output?.trim() || ""
+        });
+      }
+    }
+
+    return runs.sort(compareSavedCommandRun).slice(0, 10);
   }
 
   private normalizeWorkspaceData(raw: Partial<WorkspaceData> | undefined): WorkspaceData {
@@ -194,7 +223,8 @@ export class WorkspaceStore {
         : [],
       changeLog: Array.isArray(raw?.changeLog) ? raw.changeLog : [],
       notes: this.normalizeNotes(raw?.notes),
-      savedCommands: this.normalizeSavedCommands(raw?.savedCommands)
+      savedCommands: this.normalizeSavedCommands(raw?.savedCommands),
+      savedCommandRuns: this.normalizeSavedCommandRuns(raw?.savedCommandRuns)
     };
   }
 
@@ -210,7 +240,11 @@ export class WorkspaceStore {
 
   public isInternalPath(filePath: string): boolean {
     const resolvedPath = path.resolve(filePath);
-    if (resolvedPath === path.resolve(this.paths.systemStatus) || resolvedPath === path.resolve(this.paths.notes) || resolvedPath === path.resolve(this.paths.data)) {
+    if (
+      resolvedPath === path.resolve(this.paths.systemStatus) ||
+      resolvedPath === path.resolve(this.paths.notes) ||
+      resolvedPath === path.resolve(this.paths.data)
+    ) {
       return true;
     }
 
@@ -314,10 +348,7 @@ export class WorkspaceStore {
     return this.normalizeSavedCommands(data.savedCommands);
   }
 
-  public addSavedCommand(
-    data: WorkspaceData,
-    input: { name: string; command: string; note?: string }
-  ): WorkspaceCommand {
+  public addSavedCommand(data: WorkspaceData, input: { name: string; command: string; note?: string }): WorkspaceCommand {
     const commands = this.listSavedCommands(data);
     const savedCommand: WorkspaceCommand = {
       id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
@@ -373,6 +404,22 @@ export class WorkspaceStore {
     return duplicate;
   }
 
+  public listSavedCommandRuns(data: WorkspaceData): WorkspaceCommandRun[] {
+    return this.normalizeSavedCommandRuns(data.savedCommandRuns);
+  }
+
+  public addSavedCommandRun(data: WorkspaceData, run: Omit<WorkspaceCommandRun, "id">): WorkspaceCommandRun {
+    const next: WorkspaceCommandRun = {
+      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      ...run,
+      output: run.output.trim()
+    };
+
+    const current = this.listSavedCommandRuns(data);
+    data.savedCommandRuns = [next, ...current].slice(0, 10);
+    return next;
+  }
+
   public removeSavedCommand(data: WorkspaceData, commandId: string): boolean {
     const commands = this.listSavedCommands(data);
     const next = commands.filter((entry) => entry.id !== commandId);
@@ -381,6 +428,9 @@ export class WorkspaceStore {
     }
 
     data.savedCommands = this.normalizeSavedCommands(next);
+    data.savedCommandRuns = this.normalizeSavedCommandRuns(
+      data.savedCommandRuns.filter((run) => run.savedCommandId !== commandId)
+    );
     return true;
   }
 

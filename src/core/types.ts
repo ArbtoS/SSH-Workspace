@@ -36,6 +36,18 @@ export interface WorkspaceCommand {
   sortOrder?: number;
 }
 
+export interface WorkspaceCommandRun {
+  id: string;
+  savedCommandId: string;
+  name: string;
+  command: string;
+  startedAt: string;
+  finishedAt: string;
+  exitCode: number | null;
+  success: boolean;
+  output: string;
+}
+
 export interface TrackedFile {
   path: string;
   name: string;
@@ -65,6 +77,7 @@ export interface WorkspaceData {
   changeLog: ChangeLogEntry[];
   notes: WorkspaceNote[];
   savedCommands: WorkspaceCommand[];
+  savedCommandRuns: WorkspaceCommandRun[];
 }
 
 export function createEmptySystemInfo(): ServerSystemInfo {
@@ -86,6 +99,7 @@ export function createDefaultWorkspaceData(): WorkspaceData {
     trackedFiles: [],
     changeLog: [],
     notes: [],
-    savedCommands: []
+    savedCommands: [],
+    savedCommandRuns: []
   };
 }

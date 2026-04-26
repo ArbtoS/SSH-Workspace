@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.6
+
+- Added execution history with stored output for the last 10 global saved-command runs.
+- Recent runs now show status, timestamps, exit code, and captured output in the Aktionen view.
+
 ## 0.3.5
 
 - Added a global saved-command list in the Aktionen view with drag-and-drop ordering.
